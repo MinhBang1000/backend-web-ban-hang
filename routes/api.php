@@ -57,4 +57,9 @@ Route::middleware('auth:api')->group(function(){
      * CHANGE PASSWORD
      */
     Route::post('password/{id}',[ProfileController::class,'updatePassword']);
+
+    /**
+     * LOGOUT API
+     */
+    Route::post('auth/logout',[AuthController::class,'logout']);
 });

@@ -1,0 +1,25 @@
+backend thay bằng 127.0.0.1 sau khi run php artisan serve
+REGISTER - POST
+http://backend:8000/api/auth/register
+
+LOGIN - POST
+http://backend:8000/api/auth/login
+--> Nhận về Token
+
+CRUD Category
+READ ALL - GET
+http://backend:8000/api/category
+
+READ FOLLOW ID - GET, 1 là id
+http://backend:8000/api/category/1 
+
+STORE - POST
+http://backend:8000/api/category
+2 trường category_name, category_picture (file)
+
+UPDATE - POST, 6 là id
+http://backend:8000/api/category/update/6
+2 trường category_name, category_picture (file)
+
+DELETE - DELETE, 8 là id 
+http://backend:8000/api/category/8

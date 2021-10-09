@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -43,4 +44,17 @@ Route::middleware('auth:api')->group(function(){
      */
     Route::apiResource('product',ProductController::class);
     Route::post('product/update/{id}',[ProductController::class,'updateById']);
+
+    /**
+     * PROFILE 
+     */
+    Route::apiResource('profile',ProfileController::class);
+    Route::post('profile/update/{id}',[ProfileController::class,'updateById']);
+    Route::post('profile/avatar/{id}',[ProfileController::class,'updateAvatar']);
+    Route::post('profile/email/{id}',[ProfileController::class,'updateEmail']);
+
+    /**
+     * CHANGE PASSWORD
+     */
+    Route::post('password/{id}',[ProfileController::class,'updatePassword']);
 });

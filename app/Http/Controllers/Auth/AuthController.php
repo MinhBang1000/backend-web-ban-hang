@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,8 +32,8 @@ class AuthController extends Controller
             'email'=>$request->get('email'),
             'password'=>$password,
             'name'=>$request->get('name'),
-            'avatar'=>empty($request->get('avatar'))?$request->get('avatar'):null,
-            'birthday'=>empty($request->get('birthday'))?$request->get('birthday'):null,
+            'avatar'=>null,
+            'birthday'=>null,
             'phone'=>empty($request->get('phone'))?$request->get('phone'):null,
             'role_id'=>1,
             'cart_id'=>null
@@ -40,8 +41,18 @@ class AuthController extends Controller
         $cart = Cart::create([
             'user_id'=>$users->id,
         ]);
+        if ($request->hasFile('avatar')){
+            $file = $request->file('avatar');
+            $path = 'images/'.$file->getClientOriginalName();
+            $file->move('images',$file->getClientOriginalName());
+            $users->avatar = $path;
+        }
+        if (!empty($request->get('birthday'))){
+            $users->birthday = date('Y-m-d H:i:s',strtotime($request->get('birthday')));
+        }
         $users->cart_id = $cart->id;
         $users->save();
+        $users->role;
         return response()->json(['msg'=>'Register Success','user'=>$users],200);
     }
 

@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('roles')->insert([
-            ['role_name'=>'member'],
-            ['role_name'=>'admin'],
-            ['role_name'=>'super_admin'],
-        ]);
+        // DB::table('roles')->insert([
+        //     ['role_name'=>'member'],
+        //     ['role_name'=>'admin'],
+        //     ['role_name'=>'super_admin'],
+        // ]);
     }
 }

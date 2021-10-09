@@ -49,7 +49,8 @@ class User extends Authenticatable
     /**
      * Relationship to another table
      */
-    public function cart(){
-        return Cart::find($this->id);
+
+    public function role(){
+        return $this->belongsTo(Role::class,'role_id','id');
     }
 }

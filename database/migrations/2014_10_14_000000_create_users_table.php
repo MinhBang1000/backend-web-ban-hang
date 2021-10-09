@@ -14,18 +14,6 @@ class CreateUsersTable extends Migration
     public function up()
     {
         $this->create_users();
-        //$this->update_users();
-    }
-
-    public function update_users(){
-        if (Schema::hasTable('users')){
-            // Schema::table('users',function(Blueprint $table){
-            //     $table->string('address')->nullable();
-            // });
-            // Schema::table('users',function(Blueprint $table){
-            //     $table->integer('cart_id')->unsigned()->nullable();
-            // });
-        }
     }
 
     /**

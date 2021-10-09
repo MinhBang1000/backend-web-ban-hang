@@ -14,12 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // DB::table('categories')->insert([
-        //     ['category_name'=>'Sneakers'],
-        //     ['category_name'=>'Boots'],
-        //     ['category_name'=>'Crocs'],
-        //     ['category_name'=>'Platforms'],
-        //     ['category_name'=>'Flip-Flops'],
-        // ]);
+        DB::table('roles')->insert([
+            ['role_name'=>'member'],
+            ['role_name'=>'admin'],
+            ['role_name'=>'super_admin'],
+        ]);
     }
 }

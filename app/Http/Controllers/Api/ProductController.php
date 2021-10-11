@@ -16,7 +16,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function indexByGuest()
     {
         $product = ResourcesProduct::collection(Product::paginate(5));
         return $this->sendResponse($product->response()->getData(true),'Show all product success',200);

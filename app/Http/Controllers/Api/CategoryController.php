@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Category as ResourcesCategory;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,9 +15,10 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function indexByGuest()
     {
-        return response()->json(['categories'=>Category::all()],200);
+        $category = ResourcesCategory::collection(Category::paginate(5));
+        return $this->sendResponse($category->response()->getData(true),'All category success',200);
     }
 
     /**
@@ -41,7 +43,7 @@ class CategoryController extends Controller
             'category_name'=>'required',
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',$validator->errors(),400);
         }
         $path = null;
         if ($request->hasFile('category_picture')){
@@ -53,7 +55,7 @@ class CategoryController extends Controller
             'category_name'=>$request->get('category_name'),
             'category_picture'=>$path
         ]);
-        return response()->json(['category'=>$category],200);
+        return $this->sendResponse(new ResourcesCategory($category),'Store Success',200);
     }
 
     /**
@@ -66,9 +68,9 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         if (is_null($category)){
-            return response()->json(['msg'=>'Not Found'],404);
+            return $this->sendError('Not Found',['Not Found With This ID'],404);
         }
-        return response()->json(['category'=>$category],200);
+        return $this->sendResponse(new ResourcesCategory($category),'Show Success',200);
     }
 
     /**
@@ -97,13 +99,13 @@ class CategoryController extends Controller
     public function updateById(Request $request,$id){
         $category = Category::find($id);
         if (is_null($category)){
-            return response()->json(['msg'=>'Not Found'],404);
+            return $this->sendError('Not Found',['Not Found With This ID'],404);
         }
         $validator = Validator::make($request->all(),$rules = [
             'category_name'=>'required',
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',$validator->errors(),400);
         }
         $category->category_name = $request->get('category_name');
         $path = null;
@@ -114,7 +116,7 @@ class CategoryController extends Controller
             $category->category_picture = $path;
         }
         $category->save();
-        return response()->json(['category'=>$category],200);
+        return $this->sendResponse(new ResourcesCategory($category),'Update Success',200);
     }
 
     /**
@@ -127,9 +129,9 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         if (is_null($category)){
-            return response()->json(['msg'=>'Not Found'],404);
+            return $this->sendError('Not Found',['Not Found With This ID'],404);
         }
         $category->delete();
-        return response()->json(['msg'=>'Delete Done'],200);
+        return $this->sendResponse([],'Delete Done',200);
     }
 }

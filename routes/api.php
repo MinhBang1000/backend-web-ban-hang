@@ -34,6 +34,34 @@ Route::post('auth/login',[AuthController::class,'login']);
  */
 Route::middleware('auth:api')->group(function(){
     /**
+     * PROFILE 
+     */
+    Route::get('profile',[ProfileController::class,'showProfile']);
+    Route::post('profile/update',[ProfileController::class,'updateById']);
+    Route::post('profile/avatar',[ProfileController::class,'updateAvatar']);
+    Route::post('profile/email',[ProfileController::class,'updateEmail']);
+    /**
+     * CATEGORY
+     */
+    Route::get('category/all',[CategoryController::class,'indexByGuest']);
+
+    /**
+     * PRODUCT
+     */
+    Route::get('product/all',[ProductController::class,'indexByGuest']);
+    /**
+     * CHANGE PASSWORD
+     */
+    Route::post('profile/password',[ProfileController::class,'updatePassword']);
+
+    /**
+     * LOGOUT API
+     */
+    Route::post('auth/logout',[AuthController::class,'logout']);
+});
+
+Route::middleware(['auth:api','scope:admin,super_admin'])->group(function(){
+    /**
      * CATEGORY
      */
     Route::apiResource('category',CategoryController::class);
@@ -44,22 +72,4 @@ Route::middleware('auth:api')->group(function(){
      */
     Route::apiResource('product',ProductController::class);
     Route::post('product/update/{id}',[ProductController::class,'updateById']);
-
-    /**
-     * PROFILE 
-     */
-    Route::get('profile',[ProfileController::class,'showProfile']);
-    Route::post('profile/update',[ProfileController::class,'updateById']);
-    Route::post('profile/avatar',[ProfileController::class,'updateAvatar']);
-    Route::post('profile/email',[ProfileController::class,'updateEmail']);
-
-    /**
-     * CHANGE PASSWORD
-     */
-    Route::post('profile/password',[ProfileController::class,'updatePassword']);
-
-    /**
-     * LOGOUT API
-     */
-    Route::post('auth/logout',[AuthController::class,'logout']);
 });

@@ -27,5 +27,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
+        // API Authorization
+        Passport::tokensCan([
+            'member'=>'Member can do',
+            'admin'=>'Admin can do',
+            'super_admin'=>'Super admin can do',
+        ]);
     }
 }

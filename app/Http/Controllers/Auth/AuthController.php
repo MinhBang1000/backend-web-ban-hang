@@ -74,7 +74,21 @@ class AuthController extends Controller
             return $this->sendError('Login Fail',[$validator->errors()],400);
         }
         if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
-            $token = Auth::user()->createToken('bl_shop')->accessToken;
+            $role = Auth::user()->role_id;
+            $role_name = [];
+            // Authorization API
+            switch ($role) {
+                case 1:
+                    $role_name[] = 'member';
+                    break;
+                case 2:
+                    $role_name[] = 'admin';
+                    break;
+                case 3:
+                    $role_name[] = 'super_admin';
+                    break;
+            }
+            $token = Auth::user()->createToken('bl_shop',$role_name)->accessToken;
             $data = ['access_token'=>$token];
             return $this->sendResponse($data,'Login Success',200);
         }

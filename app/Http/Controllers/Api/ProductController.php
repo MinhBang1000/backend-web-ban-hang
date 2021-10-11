@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Product as ResourcesProduct;
 use App\Models\Collection;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -17,13 +18,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::all();
-        foreach ($product as $pr){
-            $pr->category;
-            $pr->collections;
-        }
-        // return response()->json(['product'=>$product],200);
-        return $this->sendResponse($product);
+        $product = ResourcesProduct::collection(Product::paginate(5));
+        return $this->sendResponse($product->response()->getData(true),'Show all product success',200);
     }
 
     /**
@@ -53,7 +49,7 @@ class ProductController extends Controller
             'product_describe'=>'required'
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',$validator->errors(),400);
         }
         $product = Product::create([
             'product_code'=>$request->get('product_code'),
@@ -75,13 +71,9 @@ class ProductController extends Controller
                     'product_id'=>$product->id,
                 ]);
             }
-            $temp = $product;
-            $category = $temp->category;
-            return response(['product'=>$product,'category'=>$category,'collection'=>$collection],200);
+            return $this->sendResponse(new ResourcesProduct($product),'Store Success',200);
         }
-        $temp = $product;
-        $category = $temp->category;
-        return response(['product'=>$product,'category'=>$category,'collection'=>'Haven`t picture'],200);
+        return $this->sendResponse(new ResourcesProduct($product),'Store Success',200);
     }
 
     /**
@@ -93,13 +85,10 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
-        $product_1 = Product::find($id);
         if (is_null($product)){
-            return response()->json(['msg'=>'Not found by this id'],404);
+            return $this->sendError('Not Found',['Not found with this id'],404);
         }
-        $category = $product_1->category;
-        $collections = $product_1->collections;
-        return response()->json(['product'=>$product,'category'=>$category,'collections'=>$collections],200);   
+        return $this->sendResponse(new ResourcesProduct($product),'Show product success',200);   
     }
 
     /**
@@ -136,7 +125,7 @@ class ProductController extends Controller
             'product_describe'=>'required'
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',$validator->errors(),400);
         }
         $product = Product::find($id);
         $product->product_code = $request->get('product_code');
@@ -148,7 +137,7 @@ class ProductController extends Controller
         $product->save();
         $temp = $product;
         if (is_null($product)){
-            return response()->json(['msg'=>'Not found by this id'],404);
+            return $this->sendError('Not Found',['Not found with this id'],404);
         }
         if ($request->file('product_picture')){
             $files = $request->file('product_picture');
@@ -162,10 +151,8 @@ class ProductController extends Controller
                     'product_id'=>$product->id,
                 ]);
             }
-            
-            return response(['product'=>$product,'category'=>$temp->category,'collection'=>$collections],200);
         }
-        return response(['product'=>$product,'category'=>$temp->category,'collection'=>null],200);
+        return $this->sendResponse(new ResourcesProduct($product),'Update Success',200);
     }
 
     /**
@@ -178,11 +165,10 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         if (is_null($product)){
-            return response()->json(['msg'=>'Not found by this id'],404);
+            return $this->sendError('Not Found',['Not found with this id'],404);
         }
-        $collections = Collection::where('product_id','=',$product->id);
         Collection::where('product_id','=',$id)->delete();
         $product->delete();
-        return response()->json(['msg'=>'Delete Done'],200);
+        return $this->sendResponse([],'Delete',200);
     }
 }

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User as ResourcesUser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -47,13 +49,14 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showProfile()
     {
+        $id = Auth::user()->id;
         $user = User::find($id);
         if (is_null($user)){
-            return response()->json(['msg'=>'Not Found This User'],404);
+            return $this->sendError('Show User Fail',['Not Found This User'],404);;
         }
-        return response()->json(['user'=>$user],200);
+        return $this->sendResponse(new ResourcesUser($user),'Show Profile Success',200);
     }
 
     /**
@@ -79,18 +82,19 @@ class ProfileController extends Controller
         //
     }
 
-    public function updateById(Request $request, $id)
+    public function updateById(Request $request)
     {
+        $id = Auth::user()->id;
         $user = User::find($id);
         if (is_null($user)){
-            return response()->json(['msg'=>'Not Found This User'],404);
+            return $this->sendError('Show User Fail',['Not Found This User'],404);
         }
         $validator = Validator::make($request->all(),[
             'birthday'=>'date',
             'phone'=>'min:10|max:10',
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',[$validator->errors()],400);
         }
         if (!empty($request->get('name'))){
             $user->name = $request->get('name');
@@ -102,63 +106,66 @@ class ProfileController extends Controller
             $user->phone = $request->get('phone');
         }
         $user->save();
-        return response()->json(['user'=>$user],200);
+        return $this->sendResponse(new ResourcesUser($user),'Update Success',200);
     }
 
-    public function updateAvatar(Request $request, $id){
+    public function updateAvatar(Request $request){
+        $id = Auth::user()->id;
         $user = User::find($id);
         if (is_null($user)){
-            return response()->json(['msg'=>'Not Found This User'],404);
+            return $this->sendError('Show User Fail',['Not Found This User'],404);
         }
         if ($request->hasFile('avatar')){
             $file = $request->file('avatar');
-            $user->avatar = 'images/'.$file->getClientOriginalName();
+            $user->avatar = '@/assets/images/'.$file->getClientOriginalName();
             $user->save();
-            $file->move('images',$file->getClientOriginalName());
-            return response()->json(['msg'=>'Upload Success'],200);
+            $file->move('@/assets/images',$file->getClientOriginalName());
+            return $this->sendResponse(new ResourcesUser($user),'Update Success',200);
         }
-        return response()->json(['msg'=>'File Not Found'],404);
+        return $this->sendError('Do not have picture to update',['Not Found'],404);
     }
 
-    public function updateEmail(Request $request, $id){
+    public function updateEmail(Request $request){
+        $id = Auth::user()->id;
         $user = User::find($id);
         if (is_null($user)){
-            return response()->json(['msg'=>'Not Found This User'],404);
+            return $this->sendError('Show User Fail',['Not Found This User'],404);
         }
         $validator = Validator::make($request->all(),[
             'email'=>'required|email|unique:users',
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',[$validator->errors()],400);
         }
         $user->email = $request->get('email');
         $user->save();
-        return response()->json(['user'=>$user],200);
+        return $this->sendResponse(new ResourcesUser($user),'Update Success',200);
     }
 
     /**
      * Password change
      */
-    public function updatePassword(Request $request, $id){
+    public function updatePassword(Request $request){
+        $id = Auth::user()->id;
         $user = User::find($id);
         if (is_null($user)){
-            return response()->json(['msg'=>'Not Found This User'],404);
+            return $this->sendError('Show User Fail',['Not Found This User'],404);
         }
         $validator = Validator::make($request->all(),[
             'current_password'=>'required|min:8',
             'password'=>'required|min:8|confirmed',
         ]);
         if ($validator->fails()){
-            return response()->json(['msg'=>$validator->errors()],400);
+            return $this->sendError('Validate Fail',[$validator->errors()],400);
         }
         if (Hash::check($request->get('current_password'),$user->password)){
             //... 
         }else{
-            return response()->json(['msg'=>'Your current password is incorrect!'],401);
+            return $this->sendError('Change Fail',['Current Password Incorrect!'],401);
         }
         $user->password = Hash::make($request->get('password'));
         $user->save();
-        return response()->json(['msg'=>'Change Success'],200);
+        return $this->sendResponse([],'Update Success',200);
     }
 
     /**

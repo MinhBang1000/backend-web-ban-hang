@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\Authenticate;
+use App\Http\Resources\User as UserResource;
 use App\Models\Cart;
 use App\Models\OauthAccessToken;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +29,7 @@ class AuthController extends Controller
             'name' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => $validator->errors()], 400);
+            return $this->sendError('Register Fail',[$validator->errors()],400);
         }
         $password = Hash::make($request->get('password'));
         //CREATE ACCOUNT CART -> EMPTY CART
@@ -45,8 +48,8 @@ class AuthController extends Controller
         ]);
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
-            $path = 'images/' . $file->getClientOriginalName();
-            $file->move('images', $file->getClientOriginalName());
+            $path = '@/assets/images/' . $file->getClientOriginalName();
+            $file->move('@/assets/images', $file->getClientOriginalName());
             $users->avatar = $path;
         }
         if (!empty($request->get('birthday'))) {
@@ -54,8 +57,8 @@ class AuthController extends Controller
         }
         $users->cart_id = $cart->id;
         $users->save();
-        $users->role;
-        return response()->json(['msg' => 'Register Success', 'user' => $users], 200);
+        $data = new UserResource($users);
+        return $this->sendResponse($data,'Register Successful',200);
     }
 
     /**
@@ -68,14 +71,14 @@ class AuthController extends Controller
             'password' => 'required|min:8',
         ]);
         if ($validator->fails()) {
-            return response(['msg' => $validator->errors()], 400);
+            return $this->sendError('Login Fail',[$validator->errors()],400);
         }
         if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
             $token = Auth::user()->createToken('bl_shop')->accessToken;
-            $user = Auth::user();
-            return response()->json(['msg' => 'Login Success', 'user' => $user, 'access_token' => $token], 200);
+            $data = ['access_token'=>$token];
+            return $this->sendResponse($data,'Login Success',200);
         }
-        return response()->json(['msg' => 'Login Fail'], 401);
+        return $this->sendError('Login Fail',['Email or password incorrect!'],401);
     }
 
     /**
@@ -86,8 +89,8 @@ class AuthController extends Controller
         if (Auth::check()){
             $user = Auth::user();
             $user->AauthAcessToken()->delete();
-            return response()->json(['msg' => 'Logout Success'], 200);
+            return $this->sendResponse([],'Logout Success',200);
         }
-        return response()->json(['msg' => 'Logout Fail'], 404);
+        return $this->sendError('Logout Fail',['Authenticate Not Found'],404);
     }
 }

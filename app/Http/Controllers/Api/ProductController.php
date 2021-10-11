@@ -22,7 +22,8 @@ class ProductController extends Controller
             $pr->category;
             $pr->collections;
         }
-        return response()->json(['product'=>$product],200);
+        // return response()->json(['product'=>$product],200);
+        return $this->sendResponse($product);
     }
 
     /**

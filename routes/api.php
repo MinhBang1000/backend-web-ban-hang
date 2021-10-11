@@ -48,15 +48,15 @@ Route::middleware('auth:api')->group(function(){
     /**
      * PROFILE 
      */
-    Route::apiResource('profile',ProfileController::class);
-    Route::post('profile/update/{id}',[ProfileController::class,'updateById']);
-    Route::post('profile/avatar/{id}',[ProfileController::class,'updateAvatar']);
-    Route::post('profile/email/{id}',[ProfileController::class,'updateEmail']);
+    Route::get('profile',[ProfileController::class,'showProfile']);
+    Route::post('profile/update',[ProfileController::class,'updateById']);
+    Route::post('profile/avatar',[ProfileController::class,'updateAvatar']);
+    Route::post('profile/email',[ProfileController::class,'updateEmail']);
 
     /**
      * CHANGE PASSWORD
      */
-    Route::post('password/{id}',[ProfileController::class,'updatePassword']);
+    Route::post('profile/password',[ProfileController::class,'updatePassword']);
 
     /**
      * LOGOUT API

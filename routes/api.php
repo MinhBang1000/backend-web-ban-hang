@@ -44,11 +44,13 @@ Route::middleware('auth:api')->group(function(){
      * CATEGORY
      */
     Route::get('category/all',[CategoryController::class,'indexByGuest']);
+    Route::get('category/show/{id}',[CategoryController::class,'showByGuest']);
 
     /**
      * PRODUCT
      */
     Route::get('product/all',[ProductController::class,'indexByGuest']);
+    Route::get('product/show/{id}',[ProductController::class,'showByGuest']);
     /**
      * CHANGE PASSWORD
      */

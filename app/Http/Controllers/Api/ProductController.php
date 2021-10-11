@@ -82,7 +82,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showByGuest($id)
     {
         $product = Product::find($id);
         if (is_null($product)){

@@ -48,8 +48,8 @@ class AuthController extends Controller
         ]);
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
-            $path = '@/assets/images/' . $file->getClientOriginalName();
-            $file->move('@/assets/images', $file->getClientOriginalName());
+            $path = 'images/' . $file->getClientOriginalName();
+            $file->move('images', $file->getClientOriginalName());
             $users->avatar = $path;
         }
         if (!empty($request->get('birthday'))) {

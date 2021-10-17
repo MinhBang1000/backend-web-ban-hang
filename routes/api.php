@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -80,7 +81,8 @@ Route::middleware(['auth:api','scope:member'])->group(function(){
     /**
      * CART
      */
-    Route::get('cart','Api\CartController@show');
-    Route::post('cart/add','Api\CartController@addProduct');
-    Route::post('cart/delete','Api\CartController@removeProduct');
+    Route::get('cart',[CartController::class,'show']);
+    Route::post('cart/add/{id}',[CartController::class,'addProduct']);
+    Route::post('cart/update/{id}',[CartController::class,'updateProduct']);
+    Route::delete('cart/delete/{id}',[CartController::class,'removeProduct']);
 });

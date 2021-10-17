@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Cart extends JsonResource
@@ -17,9 +18,9 @@ class Cart extends JsonResource
         $details = $this->detailcarts;
         $products = [];
         foreach ($details as $d){
-            $product = $d->products;
+            $product = Product::find($d->product_id);
             $product->product_amount = $d->product_amount;
-            $product[] = $product;
+            $products[] = $product;
         }
         return [
             'user_id'=>$this->user_id,

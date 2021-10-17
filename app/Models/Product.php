@@ -17,6 +17,7 @@ class Product extends Model
         'product_percent',
         'product_describe',
         'category_id',
+        'product_amount',
     ];
 
     public function collections(){

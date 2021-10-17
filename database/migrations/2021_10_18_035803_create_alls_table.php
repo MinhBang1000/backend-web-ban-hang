@@ -13,13 +13,14 @@ class CreateAllsTable extends Migration
      */
     public function up()
     {
-        $this->create_roles();
-        $this->create_categories();
-        $this->create_products();
-        $this->create_collections();
-        $this->create_carts();
-        $this->create_detail_carts();
-        $this->create_bills();
+        // $this->create_roles();
+        // $this->create_categories();
+        // $this->create_products();
+        // $this->create_collections();
+        // $this->create_carts();
+        // $this->create_detail_carts();
+        // $this->create_bills();
+
     }
 
     /**

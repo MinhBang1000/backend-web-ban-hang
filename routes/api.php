@@ -75,3 +75,12 @@ Route::middleware(['auth:api','scope:admin,super_admin'])->group(function(){
     Route::apiResource('product',ProductController::class);
     Route::post('product/update/{id}',[ProductController::class,'updateById']);
 });
+
+Route::middleware(['auth:api','scope:member'])->group(function(){
+    /**
+     * CART
+     */
+    Route::get('cart','Api\CartController@show');
+    Route::post('cart/add','Api\CartController@addProduct');
+    Route::post('cart/delete','Api\CartController@removeProduct');
+});

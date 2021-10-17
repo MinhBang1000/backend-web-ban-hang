@@ -26,6 +26,7 @@ class Product extends JsonResource
             'product_price'=>$this->product_price,
             'product_percent'=>$this->product_percent,
             'product_describe'=>$this->product_describe,
+            'product_amount'=>$this->product_amount,
             'category'=>$category,
             'collections'=>$collections,
         ];

@@ -118,9 +118,9 @@ class ProfileController extends Controller
         }
         if ($request->hasFile('avatar')){
             $file = $request->file('avatar');
-            $user->avatar = '@/assets/images/'.$file->getClientOriginalName();
+            $user->avatar = 'images/'.$file->getClientOriginalName();
             $user->save();
-            $file->move('@/assets/images',$file->getClientOriginalName());
+            $file->move('images',$file->getClientOriginalName());
             return $this->sendResponse(new ResourcesUser($user),'Update Success',200);
         }
         return $this->sendError('Do not have picture to update',['Not Found'],404);

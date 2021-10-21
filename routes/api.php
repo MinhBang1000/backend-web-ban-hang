@@ -27,62 +27,64 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /**
  * REGISTER AND LOGIN
  */
-Route::post('auth/register',[AuthController::class,'register']);
-Route::post('auth/login',[AuthController::class,'login']);
+Route::post('auth/register', [AuthController::class, 'register']);
+Route::post('auth/login', [AuthController::class, 'login']);
+
+
+/**
+ * PRODUCT
+ */
+Route::get('product/all', [ProductController::class, 'indexByGuest']);
+Route::get('product/show/{id}', [ProductController::class, 'showByGuest']);
 
 /**
  * MIDDLEWARE EVERY CALL API
  */
-Route::middleware('auth:api')->group(function(){
+Route::middleware('auth:api')->group(function () {
     /**
      * PROFILE 
      */
-    Route::get('profile',[ProfileController::class,'showProfile']);
-    Route::post('profile/update',[ProfileController::class,'updateById']);
-    Route::post('profile/avatar',[ProfileController::class,'updateAvatar']);
-    Route::post('profile/email',[ProfileController::class,'updateEmail']);
+    Route::get('profile', [ProfileController::class, 'showProfile']);
+    Route::post('profile/update', [ProfileController::class, 'updateById']);
+    Route::post('profile/avatar', [ProfileController::class, 'updateAvatar']);
+    Route::post('profile/email', [ProfileController::class, 'updateEmail']);
     /**
      * CATEGORY
      */
-    Route::get('category/all',[CategoryController::class,'indexByGuest']);
-    Route::get('category/show/{id}',[CategoryController::class,'showByGuest']);
+    Route::get('category/all', [CategoryController::class, 'indexByGuest']);
+    Route::get('category/show/{id}', [CategoryController::class, 'showByGuest']);
 
-    /**
-     * PRODUCT
-     */
-    Route::get('product/all',[ProductController::class,'indexByGuest']);
-    Route::get('product/show/{id}',[ProductController::class,'showByGuest']);
     /**
      * CHANGE PASSWORD
      */
-    Route::post('profile/password',[ProfileController::class,'updatePassword']);
+    Route::post('profile/password', [ProfileController::class, 'updatePassword']);
 
     /**
      * LOGOUT API
      */
-    Route::post('auth/logout',[AuthController::class,'logout']);
+    Route::post('auth/logout', [AuthController::class, 'logout']);
 });
 
-Route::middleware(['auth:api','scope:admin,super_admin'])->group(function(){
+Route::middleware(['auth:api', 'scope:admin,super_admin'])->group(function () {
     /**
      * CATEGORY
      */
-    Route::apiResource('category',CategoryController::class);
-    Route::post('category/update/{id}',[CategoryController::class,'updateById']);
+    Route::apiResource('category', CategoryController::class);
+    Route::post('category/update/{id}', [CategoryController::class, 'updateById']);
 
     /**
      * PRODUCT
      */
-    Route::apiResource('product',ProductController::class);
-    Route::post('product/update/{id}',[ProductController::class,'updateById']);
+    Route::apiResource('product', ProductController::class);
+    Route::post('product/update/{id}', [ProductController::class, 'updateById']);
 });
 
-Route::middleware(['auth:api','scope:member'])->group(function(){
+Route::middleware(['auth:api', 'scope:member'])->group(function () {
     /**
      * CART
      */
-    Route::get('cart',[CartController::class,'show']);
-    Route::post('cart/add/{id}',[CartController::class,'addProduct']);
-    Route::post('cart/update/{id}',[CartController::class,'updateProduct']);
-    Route::delete('cart/delete/{id}',[CartController::class,'removeProduct']);
+    Route::get('cart', [CartController::class, 'show']);
+    Route::post('cart/add/{id}', [CartController::class, 'addProduct']);
+    Route::post('cart/update/{id}', [CartController::class, 'updateProduct']);
+    Route::delete('cart/delete/{id}', [CartController::class, 'removeProduct']);
 });
